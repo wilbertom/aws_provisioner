@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Wilberto Morales"]
   spec.email         = ["wil@coquisystems.com"]
 
-  spec.summary       = "A DSL that compiles to AWS CloudFormation."
+  spec.summary       = "A DSL that compiles to AWS CloudFormation and provisions AWS resources."
   # spec.description   = %q{Write a longer description or delete this line.}
   # spec.homepage      = "TODO: Put your gem's website or public repo URL here."
   spec.license       = "MIT"
@@ -35,4 +35,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.16"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
+  spec.add_development_dependency "byebug", "~> 10.0"
 end
