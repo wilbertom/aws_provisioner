@@ -1,12 +1,14 @@
 module AwsProvisioner
   class Template
 
+    attr_accessor :name
     attr_reader :format_version, :description, :resources
 
-    def initialize(description=nil)
+    def initialize(name=nil, description: nil)
       @format_version = "2010-09-09"
       @description = description
       @resources = []
+      @name = name
 
       if block_given?
         yield self

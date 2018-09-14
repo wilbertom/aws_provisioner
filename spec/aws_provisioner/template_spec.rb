@@ -7,6 +7,28 @@ describe AwsProvisioner::Template do
     }
   end
 
+  describe "#name" do
+    it "defaults to nil" do
+      template = AwsProvisioner::Template.new
+
+      expect(template.name).to be nil
+    end
+
+    it "is the first argument" do
+      template = AwsProvisioner::Template.new :example
+
+      expect(template.name).to be :example
+    end
+
+    it "can be assigned later on" do
+      template = AwsProvisioner::Template.new
+
+      template.name = :new_example
+
+      expect(template.name).to be :new_example
+    end
+  end
+
   describe "#format_version" do
     it "defaults to the latest documented version" do
       template = AwsProvisioner::Template.new
@@ -23,7 +45,7 @@ describe AwsProvisioner::Template do
     end
 
     it "can be set during initialization" do
-      template = AwsProvisioner::Template.new "A simple template"
+      template = AwsProvisioner::Template.new description: "A simple template"
 
       expect(template.description).to eq "A simple template"
     end
@@ -56,7 +78,7 @@ describe AwsProvisioner::Template do
 
   describe "#to_h" do
     it "defaults to a empty template hash" do
-      template = AwsProvisioner::Template.new "A empty template"
+      template = AwsProvisioner::Template.new description: "A empty template"
 
       expect(template.to_h).to eq ({
         "AWSTemplateFormatVersion" => "2010-09-09",
@@ -66,7 +88,7 @@ describe AwsProvisioner::Template do
     end
 
     it "also creates hashes of resources added" do
-      template = AwsProvisioner::Template.new "A empty template" do |t|
+      template = AwsProvisioner::Template.new description: "A empty template" do |t|
         t.add ec2_instance_resource
       end
 
