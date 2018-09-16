@@ -50,5 +50,22 @@ module AwsProvisioner
 
       h
     end
+
+    def method_missing(m, *args, &block)
+      if assignment?(m, args)
+        m = m[0...-1].to_sym if m.to_s.end_with?("=")
+        return self.properties[m] = args[0]
+      elsif self.properties.include? m
+        return self.properties[m]
+      else
+        super
+      end
+    end
+
+    private
+
+    def assignment?(m, args)
+      m.to_s.end_with?("=") || !args.empty?
+    end
   end
 end

@@ -76,6 +76,30 @@ describe AwsProvisioner::Resource do
         something_else: "abcdefg",
       })
     end
+
+    it "can write properties directly via a method" do
+      resource = SubclassResource.new "SomeName", {}
+
+      expect do
+        resource.instance_type = "t2.micro"
+      end.to change(resource, :properties).from({}).to({instance_type: "t2.micro"})
+    end
+
+    it "can read properties directly from a method" do
+      resource = SubclassResource.new "SomeName", {
+        instance_type: "t2.micro",
+      }
+
+      expect(resource.instance_type).to eq("t2.micro")
+    end
+
+    it "will raise a NameError if the property isn't set and it is read directly" do
+      resource = SubclassResource.new "SomeName", {}
+
+      expect do
+        resource.instance_type
+      end.to raise_error(NameError)
+    end
   end
 
   describe "#valid?" do
