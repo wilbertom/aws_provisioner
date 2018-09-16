@@ -1,3 +1,6 @@
+require 'json'
+require 'yaml'
+
 module AwsProvisioner
   class Template
 
@@ -25,6 +28,15 @@ module AwsProvisioner
         "Description" => description,
         "Resources" => resources_to_h,
       }
+    end
+
+    def compile(format)
+      case format
+      when :json
+        JSON.pretty_generate(to_h)
+      when :yaml
+        YAML.dump(to_h)
+      end
     end
 
     private

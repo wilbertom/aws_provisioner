@@ -106,4 +106,49 @@ describe AwsProvisioner::Template do
       })
     end
   end
+
+  describe "#compile" do
+    it "can transform a template to a JSON format" do
+      template = AwsProvisioner::Template.new description: "A empty template" do |t|
+        t.add ec2_instance_resource
+      end
+
+      template_json = <<~TEMPLATE
+      {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "A empty template",
+        "Resources": {
+          "MyEC2Instance": {
+            "ImageId": "ami-0ff8a91507f77f867",
+            "InstanceType": "t2.micro",
+            "KeyName": "test_key",
+            "Type": "AWS::EC2::Instance"
+          }
+        }
+      }
+      TEMPLATE
+
+      expect(template.compile(:json)).to eq(template_json.strip())
+    end
+
+    it "can transform a template to a YAML format" do
+      template = AwsProvisioner::Template.new description: "A empty template" do |t|
+        t.add ec2_instance_resource
+      end
+
+      template_yaml = <<~TEMPLATE
+      ---
+      AWSTemplateFormatVersion: '2010-09-09'
+      Description: A empty template
+      Resources:
+        MyEC2Instance:
+          ImageId: ami-0ff8a91507f77f867
+          InstanceType: t2.micro
+          KeyName: test_key
+          Type: AWS::EC2::Instance
+      TEMPLATE
+
+      expect(template.compile(:yaml)).to eq(template_yaml)
+    end
+  end
 end
