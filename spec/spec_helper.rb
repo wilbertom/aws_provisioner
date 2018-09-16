@@ -1,5 +1,4 @@
 require "bundler/setup"
-require "aws_provisioner"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
