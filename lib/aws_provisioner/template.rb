@@ -12,10 +12,6 @@ module AwsProvisioner
       @description = description
       @resources = []
       @name = name
-
-      if block_given?
-        yield self
-      end
     end
 
     def add(resource)
@@ -43,7 +39,7 @@ module AwsProvisioner
 
     def resources_to_h
       resources.reduce({}) do |acc, resource|
-        acc[resource.name] = resource.to_h!
+        acc[resource.name] = resource.to_h
 
         acc
       end

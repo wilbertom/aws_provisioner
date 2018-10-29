@@ -1,10 +1,19 @@
 describe AwsProvisioner::Template do
   let(:ec2_instance_resource) do
-     AwsProvisioner::AWS::EC2::Instance.new "MyEC2Instance", {
+     AwsProvisioner::Resource.new("AWS::EC2::Instance", "MyEC2Instance", {
       image_id: "ami-0ff8a91507f77f867",
       instance_type: "t2.micro",
       key_name: "test_key",
-    }
+    })
+  end
+
+  let(:s3_bucket_resource) do
+    AwsProvisioner::Resource.new("AWS::S3::Bucket", "bucket.example.com", {
+      access_control: "AuthenticatedRead",
+      accelerate_configuration: {
+        acceleration_status: "Enabled",
+      },
+    })
   end
 
   describe "#name" do
@@ -57,14 +66,6 @@ describe AwsProvisioner::Template do
 
       expect(template.resources).to be_empty
     end
-
-    it "can be added in a block" do
-      template = AwsProvisioner::Template.new do |t|
-        t.add ec2_instance_resource
-      end
-
-      expect(template.resources).to contain_exactly ec2_instance_resource
-    end
   end
 
   describe "#add" do
@@ -88,9 +89,8 @@ describe AwsProvisioner::Template do
     end
 
     it "also creates hashes of resources added" do
-      template = AwsProvisioner::Template.new description: "A empty template" do |t|
-        t.add ec2_instance_resource
-      end
+      template = AwsProvisioner::Template.new description: "A empty template"
+      template.add(ec2_instance_resource)
 
       expect(template.to_h).to eq ({
         "AWSTemplateFormatVersion" => "2010-09-09",
@@ -109,9 +109,9 @@ describe AwsProvisioner::Template do
 
   describe "#compile" do
     it "can transform a template to a JSON format" do
-      template = AwsProvisioner::Template.new description: "A empty template" do |t|
-        t.add ec2_instance_resource
-      end
+      template = AwsProvisioner::Template.new description: "A empty template"
+      template.add(ec2_instance_resource)
+      template.add(s3_bucket_resource)
 
       template_json = <<~TEMPLATE
       {
@@ -123,6 +123,13 @@ describe AwsProvisioner::Template do
             "InstanceType": "t2.micro",
             "KeyName": "test_key",
             "Type": "AWS::EC2::Instance"
+          },
+          "bucket.example.com": {
+            "AccessControl": "AuthenticatedRead",
+            "AccelerateConfiguration": {
+              "AccelerationStatus": "Enabled"
+            },
+            "Type": "AWS::S3::Bucket"
           }
         }
       }
@@ -132,9 +139,9 @@ describe AwsProvisioner::Template do
     end
 
     it "can transform a template to a YAML format" do
-      template = AwsProvisioner::Template.new description: "A empty template" do |t|
-        t.add ec2_instance_resource
-      end
+      template = AwsProvisioner::Template.new description: "A empty template"
+      template.add(ec2_instance_resource)
+      template.add(s3_bucket_resource)
 
       template_yaml = <<~TEMPLATE
       ---
@@ -146,6 +153,11 @@ describe AwsProvisioner::Template do
           InstanceType: t2.micro
           KeyName: test_key
           Type: AWS::EC2::Instance
+        bucket.example.com:
+          AccessControl: AuthenticatedRead
+          AccelerateConfiguration:
+            AccelerationStatus: Enabled
+          Type: AWS::S3::Bucket
       TEMPLATE
 
       expect(template.compile(:yaml)).to eq(template_yaml)

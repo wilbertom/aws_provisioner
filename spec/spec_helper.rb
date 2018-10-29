@@ -1,5 +1,9 @@
 require "bundler/setup"
 
+unless ENV["AWS_PROVISIONER_SPECS_DONT_INCLUDE_LIB"]
+  require 'aws_provisioner'
+end
+
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = ".rspec_status"

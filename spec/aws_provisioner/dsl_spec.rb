@@ -59,8 +59,20 @@ describe "AwsProvisioner::DSL" do
   end
 
   describe "resource" do
-    it "delegates creating a resource to the underlying AWS type" do
-      expect(AwsProvisioner::AWS::EC2::Instance).to receive(:new).with("instance01", {})
+    it "creates a new resource with the AWS type transformed" do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with("AWS::Some::Aws::Resource", "instance01", {})
+        .and_call_original
+
+      resource :some_aws_resource, "instance01" do
+
+      end
+    end
+
+    it "renames ec2 to EC2" do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with("AWS::EC2::Instance", "instance01", {})
+        .and_call_original
 
       resource :ec2_instance, "instance01" do
 
@@ -75,26 +87,38 @@ describe "AwsProvisioner::DSL" do
       expect(r).to be_kind_of(AwsProvisioner::Resource)
     end
 
-    it "raises an error when resource type is unknown" do
-      expect do
-        resource :some_unkown_resource, "instance01" do
-
+    context "with simple properties" do
+      it "sets the ones declared in a block" do
+        r = resource :ec2_instance, "instance01" do
+          image_id "ami-123456"
+          instance_type "t2.micro"
+          key_name "test_key"
         end
-      end.to raise_error(AwsProvisioner::DSL::UnkownResourceType)
+
+        expect(r.properties.to_h).to eq({
+          image_id: "ami-123456",
+          instance_type: "t2.micro",
+          key_name: "test_key",
+        })
+      end
     end
 
-    it "sets the properties declared in the block" do
-      r = resource :ec2_instance, "instance01" do
-        image_id "ami-123456"
-        instance_type "t2.micro"
-        key_name "test_key"
-      end
+    context "with nested properties" do
+      it "sets the ones declared in a block" do
+        r = resource :s3_bucket, "bucket01" do
+          access_control :authenticated_read
+          accelerate_configuration {
+            acceleration_status :enabled
+          }
+        end
 
-      expect(r.properties).to eq({
-        image_id: "ami-123456",
-        instance_type: "t2.micro",
-        key_name: "test_key",
-      })
+        expect(r.properties.to_h).to eq({
+          access_control: :authenticated_read,
+          accelerate_configuration: {
+            acceleration_status: :enabled
+          }
+        })
+      end
     end
   end
 end
