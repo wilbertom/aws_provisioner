@@ -1,6 +1,7 @@
 require_relative 'runtime'
 require_relative 'template'
 require_relative 'resource'
+require_relative 'environment'
 
 module AwsProvisioner
   module DSL
@@ -43,3 +44,41 @@ def resource(resource_type, name, &block)
 
   r
 end
+
+class Object
+  def add_aws_provisioner_dsl
+    AwsProvisioner::Environment.environments.each do |environment|
+      define_method("#{environment}?".to_sym) do
+        AwsProvisioner::Environment.current?(environment)
+      end
+    end
+
+    define_method(:current) do
+      AwsProvisioner::Environment.current
+    end
+  end
+end
+
+def configure
+  config_file_path = ENV["AWS_PROVISIONER_CONFIG"]
+
+  if config_file_path
+    config = YAML.load(File.read(config_file_path))
+
+    environments = config["environments"].reduce({}) do |acc, entry|
+      key, value = entry
+      acc[key.to_sym] = value
+
+      acc
+    end
+
+    AwsProvisioner::Environment.configure(
+      environments,
+      ENV["AWS_PROVISIONER_ENVIRONMENT"].to_sym
+    )
+  end
+
+  Object.add_aws_provisioner_dsl
+end
+
+configure

@@ -121,4 +121,43 @@ describe "AwsProvisioner::DSL" do
       end
     end
   end
+
+  describe "configure" do
+    let(:config_file) { "spec/support/aws_provisioner_config.yaml" }
+    let(:environment) { "testing" }
+
+    before(:each) do
+      allow(ENV).to receive(:[]).with("AWS_PROVISIONER_CONFIG").and_return(config_file)
+      allow(ENV).to receive(:[]).with("AWS_PROVISIONER_ENVIRONMENT").and_return(environment)
+    end
+
+    it "reads the contents of AWS_PROVISIONER_CONFIG file" do
+      expect(File).to receive(:read).with(config_file).and_call_original
+
+      configure
+    end
+
+    it "configures the environments from the values in the configuration file" do
+      AwsProvisioner::Environment.configure({production: {}, qa: {}}, :qa)
+
+      expect do
+        configure
+      end.to change(AwsProvisioner::Environment, :environments).to([:testing, :qa, :staging, :production])
+    end
+
+    it "adds a global environment predicate for each environment" do
+      configure
+
+      expect(qa?).to be(false)
+      expect(staging?).to be(false)
+      expect(production?).to be(false)
+      expect(testing?).to be(true)
+    end
+
+    it "adds a current global which returns the current environment" do
+      configure
+
+      expect(current).to eq(:testing)
+    end
+  end
 end
