@@ -16,6 +16,16 @@ module AwsProvisioner
       Object.add_aws_provisioner_dsl
     end
 
+    def self.translate_resource_type(resource_type)
+      type = resource_type
+             .to_s
+             .split('_')
+             .map { |part| translate_resource_part_name(part) }
+             .join('::')
+
+      "AWS::#{type}"
+    end
+
     # Scraped from the ruby AWS sdk repo running:
     # grep -R m1_xlarge gems/aws-sdk-ec2/lib/aws-sdk-ec2/resource.rb \
     #   | awk '{for(i=7;i<=NF;++i) printf("%s \n",  $i) }'
@@ -202,16 +212,6 @@ module AwsProvisioner
         environments,
         ENV['AWS_PROVISIONER_ENVIRONMENT'].to_sym
       )
-    end
-
-    private_class_method def self.translate_resource_type(resource_type)
-      type = resource_type
-             .to_s
-             .split('_')
-             .map { |part| translate_resource_part_name(part) }
-             .join('::')
-
-      "AWS::#{type}"
     end
 
     private_class_method def self.translate_resource_part_name(part)
