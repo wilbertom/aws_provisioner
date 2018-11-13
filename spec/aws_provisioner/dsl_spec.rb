@@ -134,19 +134,19 @@ describe "AwsProvisioner::DSL" do
     it "reads the contents of AWS_PROVISIONER_CONFIG file" do
       expect(File).to receive(:read).with(config_file).and_call_original
 
-      configure
+      AwsProvisioner::DSL.configure
     end
 
     it "configures the environments from the values in the configuration file" do
       AwsProvisioner::Environment.configure({production: {}, qa: {}}, :qa)
 
       expect do
-        configure
+        AwsProvisioner::DSL.configure
       end.to change(AwsProvisioner::Environment, :environments).to([:testing, :qa, :staging, :production])
     end
 
     it "adds a global environment predicate for each environment" do
-      configure
+      AwsProvisioner::DSL.configure
 
       expect(qa?).to be(false)
       expect(staging?).to be(false)
@@ -155,9 +155,18 @@ describe "AwsProvisioner::DSL" do
     end
 
     it "adds a current global which returns the current environment" do
-      configure
+      AwsProvisioner::DSL.configure
 
       expect(current).to eq(:testing)
+    end
+
+    it "adds AWS instance type globals" do
+      AwsProvisioner::DSL.configure
+
+      expect(t1_micro).to eq('t1.micro')
+      expect(m1_small).to eq('m1.small')
+      expect(cr1_8xlarge).to eq('cr1.8xlarge')
+      expect(u_12tb1_metal).to eq('u-12tb1.metal')
     end
   end
 end
