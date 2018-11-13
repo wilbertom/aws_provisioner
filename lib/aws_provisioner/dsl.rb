@@ -6,34 +6,21 @@ require_relative 'environment'
 module AwsProvisioner
   module DSL
     def self.configure
-      config_file_path = ENV["AWS_PROVISIONER_CONFIG"]
+      config_file_path = ENV['AWS_PROVISIONER_CONFIG']
 
       if config_file_path
-        config = YAML.load(File.read(config_file_path))
-
-        environments = config["environments"].reduce({}) do |acc, entry|
-          key, value = entry
-          acc[key.to_sym] = value
-
-          acc
-        end
-
-        AwsProvisioner::Environment.configure(
-          environments,
-          ENV["AWS_PROVISIONER_ENVIRONMENT"].to_sym
-        )
+        config = YAML.safe_load(File.read(config_file_path))
+        configure_environment(config)
       end
 
       Object.add_aws_provisioner_dsl
     end
 
     # Scraped from the ruby AWS sdk repo running:
-    # grep -R :m1_xlarge gems/aws-sdk-ec2/lib/aws-sdk-ec2/:resource_rb \
+    # grep -R m1_xlarge gems/aws-sdk-ec2/lib/aws-sdk-ec2/resource.rb \
     #   | awk '{for(i=7;i<=NF;++i) printf("%s \n",  $i) }'
     # here we grep for a comment in the source code which lists all the valid
     # instance_type values for the Resource#create_instances method
-    # https://:github_com/aws/aws-sdk-ruby/blob/e330c890a3fbdcf51955cd59c813424ff4895318/gems/aws-sdk-ec2/lib/aws-sdk-ec2/:resource_rb#L73
-    # then find and replace dots with underscores to create symbols
     INSTANCE_TYPES = [
       't1.micro',
       't2.nano',
@@ -200,22 +187,34 @@ module AwsProvisioner
       'z1d.12xlarge',
       'u-6tb1.metal',
       'u-9tb1.metal',
-      'u-12tb1.metal',
+      'u-12tb1.metal'
     ].freeze
 
     private
 
-    def self.translate_resource_type(resource_type)
+    private_class_method def self.configure_environment(config)
+      environments = config['environments'].each_with_object({}) do |entry, acc|
+        key, value = entry
+        acc[key.to_sym] = value
+      end
+
+      AwsProvisioner::Environment.configure(
+        environments,
+        ENV['AWS_PROVISIONER_ENVIRONMENT'].to_sym
+      )
+    end
+
+    private_class_method def self.translate_resource_type(resource_type)
       type = resource_type
-        .to_s
-        .split('_')
-        .map { |part| self.translate_resource_part_name(part) }
-        .join('::')
+             .to_s
+             .split('_')
+             .map { |part| translate_resource_part_name(part) }
+             .join('::')
 
       "AWS::#{type}"
     end
 
-    def self.translate_resource_part_name(part)
+    private_class_method def self.translate_resource_part_name(part)
       if part == 'ec2'
         'EC2'
       else
@@ -225,7 +224,7 @@ module AwsProvisioner
   end
 end
 
-def template(name=nil, description: nil, &block)
+def template(name = nil, description = nil, &block)
   t = AwsProvisioner::Template.new(name, description: description)
 
   t.instance_eval(&block)
@@ -267,7 +266,7 @@ class Object
 
   def add_aws_instance_types
     AwsProvisioner::DSL::INSTANCE_TYPES.each do |instance_type|
-      define_method("#{instance_type.gsub('.', '_').gsub('-', '_')}") do
+      define_method(instance_type.tr('.', '_').tr('-', '_').to_s) do
         instance_type
       end
     end
