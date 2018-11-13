@@ -12,7 +12,8 @@ module AwsProvisioner
     end
 
     def to_h
-      h  = properties.to_t
+      h = {}
+      h["Properties"]  = properties.to_t
       h["Type"] = type
 
       h

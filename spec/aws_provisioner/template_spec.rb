@@ -97,10 +97,12 @@ describe AwsProvisioner::Template do
         "Description" => "A empty template",
         "Resources" => {
           "MyEC2Instance" => {
+            "Properties" => {
+              "ImageId" => "ami-0ff8a91507f77f867",
+              "InstanceType" => "t2.micro",
+              "KeyName" => "test_key",
+            },
             "Type" => "AWS::EC2::Instance",
-            "ImageId" => "ami-0ff8a91507f77f867",
-            "InstanceType" => "t2.micro",
-            "KeyName" => "test_key"
           }
         },
       })
@@ -119,15 +121,19 @@ describe AwsProvisioner::Template do
         "Description": "A empty template",
         "Resources": {
           "MyEC2Instance": {
-            "ImageId": "ami-0ff8a91507f77f867",
-            "InstanceType": "t2.micro",
-            "KeyName": "test_key",
+            "Properties": {
+              "ImageId": "ami-0ff8a91507f77f867",
+              "InstanceType": "t2.micro",
+              "KeyName": "test_key"
+            },
             "Type": "AWS::EC2::Instance"
           },
           "bucket.example.com": {
-            "AccessControl": "AuthenticatedRead",
-            "AccelerateConfiguration": {
-              "AccelerationStatus": "Enabled"
+            "Properties": {
+              "AccessControl": "AuthenticatedRead",
+              "AccelerateConfiguration": {
+                "AccelerationStatus": "Enabled"
+              }
             },
             "Type": "AWS::S3::Bucket"
           }
@@ -149,14 +155,16 @@ describe AwsProvisioner::Template do
       Description: A empty template
       Resources:
         MyEC2Instance:
-          ImageId: ami-0ff8a91507f77f867
-          InstanceType: t2.micro
-          KeyName: test_key
+          Properties:
+            ImageId: ami-0ff8a91507f77f867
+            InstanceType: t2.micro
+            KeyName: test_key
           Type: AWS::EC2::Instance
         bucket.example.com:
-          AccessControl: AuthenticatedRead
-          AccelerateConfiguration:
-            AccelerationStatus: Enabled
+          Properties:
+            AccessControl: AuthenticatedRead
+            AccelerateConfiguration:
+              AccelerationStatus: Enabled
           Type: AWS::S3::Bucket
       TEMPLATE
 

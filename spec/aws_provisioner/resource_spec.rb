@@ -30,9 +30,11 @@ describe AwsProvisioner::Resource do
       }
 
       expect(resource.to_h).to eq({
-        "InstanceType" => "t2.micro",
-        "ImageId" => "ami-123456",
-        "AllowSelfManagement" => true,
+        "Properties" => {
+          "InstanceType" => "t2.micro",
+          "ImageId" => "ami-123456",
+          "AllowSelfManagement" => true,
+        },
         "Type" => "AWS::Resource",
       })
     end
@@ -46,9 +48,11 @@ describe AwsProvisioner::Resource do
       }
 
       expect(resource.to_h).to eq({
-        "AccessControl" => "AuthenticatedRead",
-        "AccelerateConfiguration" => {
-          "AccelerationStatus" => "Enabled",
+        "Properties" => {
+          "AccessControl" => "AuthenticatedRead",
+          "AccelerateConfiguration" => {
+            "AccelerationStatus" => "Enabled",
+          },
         },
         "Type" => "AWS::Resource",
       })
