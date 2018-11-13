@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'runtime'
 require_relative 'template'
 require_relative 'resource'
@@ -215,8 +217,9 @@ module AwsProvisioner
     end
 
     private_class_method def self.translate_resource_part_name(part)
-      if part == 'ec2'
-        'EC2'
+      upper_cased_names = %w[ec2 vpc]
+      if upper_cased_names.include?(part)
+        part.upcase
       else
         part.camelize
       end

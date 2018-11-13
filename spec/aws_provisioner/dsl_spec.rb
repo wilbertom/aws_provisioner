@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'aws_provisioner/dsl'
 
 describe 'AwsProvisioner::DSL' do
@@ -68,6 +70,15 @@ describe 'AwsProvisioner::DSL' do
         .and_call_original
 
       resource :ec2_instance, 'instance01' do
+      end
+    end
+
+    it 'renames vpc to VPC' do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::EC2::VPC', 'vpc01', {})
+        .and_call_original
+
+      resource :ec2_vpc, 'vpc01' do
       end
     end
 
