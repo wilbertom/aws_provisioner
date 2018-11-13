@@ -19,11 +19,15 @@ module AwsProvisioner
     end
 
     def self.translate_resource_type(resource_type)
-      type = resource_type
-             .to_s
-             .split('_')
-             .map { |part| translate_resource_part_name(part) }
-             .join('::')
+      type = if RESOURCE_TYPE_SPECIAL_CASES.include?(resource_type)
+               RESOURCE_TYPE_SPECIAL_CASES[resource_type]
+             else
+               resource_type
+                 .to_s
+                 .split('_')
+                 .map { |part| translate_resource_part_name(part) }
+                 .join('::')
+             end
 
       "AWS::#{type}"
     end
@@ -204,6 +208,12 @@ module AwsProvisioner
 
     private
 
+    RESOURCE_TYPE_SPECIAL_CASES = {
+      ec2_instance: 'EC2::Instance',
+      ec2_security_group: 'EC2::SecurityGroup',
+      ec2_vpc: 'EC2::VPC'
+    }.freeze
+
     private_class_method def self.configure_environment(config)
       environments = config['environments'].each_with_object({}) do |entry, acc|
         key, value = entry
@@ -217,12 +227,7 @@ module AwsProvisioner
     end
 
     private_class_method def self.translate_resource_part_name(part)
-      upper_cased_names = %w[ec2 vpc]
-      if upper_cased_names.include?(part)
-        part.upcase
-      else
-        part.camelize
-      end
+      part.camelize
     end
   end
 end

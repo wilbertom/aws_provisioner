@@ -82,6 +82,15 @@ describe 'AwsProvisioner::DSL' do
       end
     end
 
+    it 'renames security_group to SecurityGroup' do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::EC2::SecurityGroup', 'sg01', {})
+        .and_call_original
+
+      resource :ec2_security_group, 'sg01' do
+      end
+    end
+
     it 'returns the new resource' do
       r = resource :ec2_instance, 'instance01' do
       end
