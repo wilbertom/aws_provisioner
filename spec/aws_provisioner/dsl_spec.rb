@@ -57,7 +57,7 @@ describe 'AwsProvisioner::DSL' do
   describe 'resource' do
     it 'creates a new resource with the AWS type transformed' do
       expect(AwsProvisioner::Resource).to receive(:new)
-        .with('AWS::Some::Aws::Resource', 'instance01', {export: false})
+        .with('AWS::Some::Aws::Resource', 'instance01', export: false)
         .and_call_original
 
       resource :some_aws_resource, 'instance01' do
@@ -66,7 +66,7 @@ describe 'AwsProvisioner::DSL' do
 
     it 'accepts a export argument' do
       expect(AwsProvisioner::Resource).to receive(:new)
-        .with('AWS::Some::Aws::Resource', 'instance01', {export: true})
+        .with('AWS::Some::Aws::Resource', 'instance01', export: true)
         .and_call_original
 
       resource :some_aws_resource, 'instance01', export: true do
@@ -75,7 +75,7 @@ describe 'AwsProvisioner::DSL' do
 
     it 'renames ec2 to EC2' do
       expect(AwsProvisioner::Resource).to receive(:new)
-        .with('AWS::EC2::Instance', 'instance01', {export: false})
+        .with('AWS::EC2::Instance', 'instance01', export: false)
         .and_call_original
 
       resource :ec2_instance, 'instance01' do
@@ -84,7 +84,7 @@ describe 'AwsProvisioner::DSL' do
 
     it 'renames vpc to VPC' do
       expect(AwsProvisioner::Resource).to receive(:new)
-        .with('AWS::EC2::VPC', 'vpc01', {export: false})
+        .with('AWS::EC2::VPC', 'vpc01', export: false)
         .and_call_original
 
       resource :ec2_vpc, 'vpc01' do
@@ -93,7 +93,7 @@ describe 'AwsProvisioner::DSL' do
 
     it 'renames security_group to SecurityGroup' do
       expect(AwsProvisioner::Resource).to receive(:new)
-        .with('AWS::EC2::SecurityGroup', 'sg01', {export: false})
+        .with('AWS::EC2::SecurityGroup', 'sg01', export: false)
         .and_call_original
 
       resource :ec2_security_group, 'sg01' do

@@ -1,14 +1,15 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'yaml'
 
 module AwsProvisioner
   class Template
-
     attr_accessor :name
     attr_reader :format_version, :description, :resources
 
-    def initialize(name=nil, description: nil)
-      @format_version = "2010-09-09"
+    def initialize(name = nil, description: nil)
+      @format_version = '2010-09-09'
       @description = description
       @resources = []
       @name = name
@@ -24,10 +25,10 @@ module AwsProvisioner
 
     def to_h
       {
-        "AWSTemplateFormatVersion" => format_version,
-        "Description" => description,
-        "Resources" => resources_to_h,
-        "Outputs" => exports_to_h,
+        'AWSTemplateFormatVersion' => format_version,
+        'Description' => description,
+        'Resources' => resources_to_h,
+        'Outputs' => exports_to_h
       }
     end
 
@@ -43,21 +44,17 @@ module AwsProvisioner
     private
 
     def resources_to_h
-      resources.reduce({}) do |acc, resource|
+      resources.each_with_object({}) do |resource, acc|
         acc[resource.name] = resource.to_h
-
-        acc
       end
     end
 
     def exports_to_h
-      exports.reduce({}) do |acc, resource|
+      exports.each_with_object({}) do |resource, acc|
         acc[resource.name] = {
-          "Value" => resource.ref,
-          "Export" => resource.name
+          'Value' => resource.ref,
+          'Export' => resource.name
         }
-
-        acc
       end
     end
   end

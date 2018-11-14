@@ -120,7 +120,7 @@ describe AwsProvisioner::Template do
         'AWSTemplateFormatVersion' => '2010-09-09',
         'Description' => 'A empty template',
         'Resources' => {},
-        'Outputs' => {},
+        'Outputs' => {}
       )
     end
 
