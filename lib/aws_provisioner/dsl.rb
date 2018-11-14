@@ -257,7 +257,7 @@ def ref(resource_type, resource_name)
 
   raise AwsProvisioner::DSL::ReferenceForUnkownResource if r.nil?
 
-  { 'Ref' => r.name }
+  r.ref
 end
 
 class Object

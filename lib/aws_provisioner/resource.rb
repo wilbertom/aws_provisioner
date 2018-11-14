@@ -20,5 +20,9 @@ module AwsProvisioner
 
       h
     end
+
+    def ref
+      { 'Ref' => name.to_s }
+    end
   end
 end

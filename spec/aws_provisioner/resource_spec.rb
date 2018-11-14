@@ -23,6 +23,14 @@ describe AwsProvisioner::Resource do
     end
   end
 
+  describe '#ref' do
+    it 'returns a reference to the resource' do
+      resource = AwsProvisioner::Resource.new('AWS::Resource', :name, {})
+
+      expect(resource.ref).to eq('Ref' => 'name')
+    end
+  end
+
   describe '#to_h' do
     it 'returns each property renamed with the AWS type' do
       resource = AwsProvisioner::Resource.new 'AWS::Resource', 'SomeName',
