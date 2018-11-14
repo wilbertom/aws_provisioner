@@ -3,21 +3,21 @@
 describe AwsProvisioner::Resource do
   describe '#name' do
     it 'is set during initialization' do
-      resource = AwsProvisioner::Resource.new 'AWS::Resource', 'SomeName', {}
+      resource = AwsProvisioner::Resource.new('AWS::Resource', 'SomeName')
 
       expect(resource.name).to eq 'SomeName'
     end
 
     it "can't be nil" do
       expect do
-        AwsProvisioner::Resource.new :resource, nil, {}
+        AwsProvisioner::Resource.new('AWS::Resource', nil)
       end.to raise_error(ArgumentError)
     end
   end
 
   describe '#type' do
     it 'is the first argument in the CFN format' do
-      resource = AwsProvisioner::Resource.new('AWS::Resource', :name, {})
+      resource = AwsProvisioner::Resource.new('AWS::Resource', :name)
 
       expect(resource.type).to eq('AWS::Resource')
     end
@@ -25,18 +25,37 @@ describe AwsProvisioner::Resource do
 
   describe '#ref' do
     it 'returns a reference to the resource' do
-      resource = AwsProvisioner::Resource.new('AWS::Resource', :name, {})
+      resource = AwsProvisioner::Resource.new('AWS::Resource', :name)
 
       expect(resource.ref).to eq('Ref' => 'name')
     end
   end
 
+  describe '#export' do
+    it 'is a optional keyword argument' do
+      resource = AwsProvisioner::Resource.new('AWS::Resource', :name, export: true)
+
+      expect(resource.export).to be(true)
+    end
+
+    it 'defaults to false' do
+      resource = AwsProvisioner::Resource.new('AWS::Resource', :name)
+
+      expect(resource.export).to eq(false)
+    end
+  end
+
   describe '#to_h' do
     it 'returns each property renamed with the AWS type' do
-      resource = AwsProvisioner::Resource.new 'AWS::Resource', 'SomeName',
-                                              instance_type: 't2.micro',
-                                              image_id: 'ami-123456',
-                                              allow_self_management: true
+      resource = AwsProvisioner::Resource.new(
+        'AWS::Resource',
+        'SomeName',
+        hash: {
+          instance_type: 't2.micro',
+          image_id: 'ami-123456',
+          allow_self_management: true
+        }
+      )
 
       expect(resource.to_h).to eq(
         'Properties' => {
@@ -49,11 +68,16 @@ describe AwsProvisioner::Resource do
     end
 
     it 'returns nested properties renamed with the AWS type' do
-      resource = AwsProvisioner::Resource.new 'AWS::Resource', 'SomeName',
-                                              access_control: 'AuthenticatedRead',
-                                              accelerate_configuration: {
-                                                acceleration_status: 'Enabled'
-                                              }
+      resource = AwsProvisioner::Resource.new(
+        'AWS::Resource',
+        'SomeName',
+        hash: {
+          access_control: 'AuthenticatedRead',
+          accelerate_configuration: {
+            acceleration_status: 'Enabled'
+          }
+        }
+      )
 
       expect(resource.to_h).to eq(
         'Properties' => {

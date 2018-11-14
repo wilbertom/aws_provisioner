@@ -18,11 +18,16 @@ module AwsProvisioner
       resources << resource
     end
 
+    def exports
+      resources.select(&:export)
+    end
+
     def to_h
       {
         "AWSTemplateFormatVersion" => format_version,
         "Description" => description,
         "Resources" => resources_to_h,
+        "Outputs" => exports_to_h,
       }
     end
 
@@ -40,6 +45,17 @@ module AwsProvisioner
     def resources_to_h
       resources.reduce({}) do |acc, resource|
         acc[resource.name] = resource.to_h
+
+        acc
+      end
+    end
+
+    def exports_to_h
+      exports.reduce({}) do |acc, resource|
+        acc[resource.name] = {
+          "Value" => resource.ref,
+          "Export" => resource.name
+        }
 
         acc
       end

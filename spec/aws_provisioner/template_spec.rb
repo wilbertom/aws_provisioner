@@ -2,18 +2,29 @@
 
 describe AwsProvisioner::Template do
   let(:ec2_instance_resource) do
-    AwsProvisioner::Resource.new('AWS::EC2::Instance', 'MyEC2Instance',
-                                 image_id: 'ami-0ff8a91507f77f867',
-                                 instance_type: 't2.micro',
-                                 key_name: 'test_key')
+    AwsProvisioner::Resource.new(
+      'AWS::EC2::Instance',
+      'MyEC2Instance',
+      hash: {
+        image_id: 'ami-0ff8a91507f77f867',
+        instance_type: 't2.micro',
+        key_name: 'test_key'
+      }
+    )
   end
 
   let(:s3_bucket_resource) do
-    AwsProvisioner::Resource.new('AWS::S3::Bucket', 'bucket.example.com',
-                                 access_control: 'AuthenticatedRead',
-                                 accelerate_configuration: {
-                                   acceleration_status: 'Enabled'
-                                 })
+    AwsProvisioner::Resource.new(
+      'AWS::S3::Bucket',
+      'bucket.example.com',
+      hash: {
+        access_control: 'AuthenticatedRead',
+        accelerate_configuration: {
+          acceleration_status: 'Enabled'
+        }
+      },
+      export: true
+    )
   end
 
   describe '#name' do
@@ -68,6 +79,30 @@ describe AwsProvisioner::Template do
     end
   end
 
+  describe '#exports' do
+    it 'defaults to an empty list' do
+      template = AwsProvisioner::Template.new
+
+      expect(template.exports).to be_empty
+    end
+
+    it 'returns exported resources' do
+      template = AwsProvisioner::Template.new
+
+      template.add(s3_bucket_resource)
+
+      expect(template.exports).to contain_exactly(s3_bucket_resource)
+    end
+
+    it 'does not returns unexported resources' do
+      template = AwsProvisioner::Template.new
+
+      template.add(ec2_instance_resource)
+
+      expect(template.exports).to be_empty
+    end
+  end
+
   describe '#add' do
     it 'adds resource' do
       template = AwsProvisioner::Template.new
@@ -84,7 +119,8 @@ describe AwsProvisioner::Template do
       expect(template.to_h).to eq(
         'AWSTemplateFormatVersion' => '2010-09-09',
         'Description' => 'A empty template',
-        'Resources' => {}
+        'Resources' => {},
+        'Outputs' => {},
       )
     end
 
@@ -104,6 +140,9 @@ describe AwsProvisioner::Template do
             },
             'Type' => 'AWS::EC2::Instance'
           }
+        },
+        'Outputs' => {
+
         }
       )
     end
@@ -137,6 +176,14 @@ describe AwsProvisioner::Template do
               },
               "Type": "AWS::S3::Bucket"
             }
+          },
+          "Outputs": {
+            "bucket.example.com": {
+              "Value": {
+                "Ref": "bucket.example.com"
+              },
+              "Export": "bucket.example.com"
+            }
           }
         }
       TEMPLATE
@@ -166,6 +213,11 @@ describe AwsProvisioner::Template do
               AccelerateConfiguration:
                 AccelerationStatus: Enabled
             Type: AWS::S3::Bucket
+        Outputs:
+          bucket.example.com:
+            Value:
+              Ref: bucket.example.com
+            Export: bucket.example.com
       TEMPLATE
 
       expect(template.compile(:yaml)).to eq(template_yaml)

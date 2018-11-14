@@ -243,9 +243,9 @@ def template(name = nil, description = nil, &block)
   t
 end
 
-def resource(resource_type, name, &block)
+def resource(resource_type, name, export: false, &block)
   aws_type = AwsProvisioner::DSL.translate_resource_type(resource_type)
-  r = AwsProvisioner::Resource.new(aws_type, name, {})
+  r = AwsProvisioner::Resource.new(aws_type, name, export: export)
   r.properties.instance_eval(&block)
   AwsProvisioner::Runtime.add_resource(resource_type, r)
 
