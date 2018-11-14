@@ -7,6 +7,8 @@ require_relative 'environment'
 
 module AwsProvisioner
   module DSL
+    class ReferenceForUnkownResource < RuntimeError; end
+
     def self.configure
       config_file_path = ENV['AWS_PROVISIONER_CONFIG']
 
@@ -245,8 +247,17 @@ def resource(resource_type, name, &block)
   aws_type = AwsProvisioner::DSL.translate_resource_type(resource_type)
   r = AwsProvisioner::Resource.new(aws_type, name, {})
   r.properties.instance_eval(&block)
+  AwsProvisioner::Runtime.add_resource(resource_type, r)
 
   r
+end
+
+def ref(resource_type, resource_name)
+  r = AwsProvisioner::Runtime.resource(resource_type, resource_name)
+
+  raise AwsProvisioner::DSL::ReferenceForUnkownResource if r.nil?
+
+  { 'Ref' => r.name }
 end
 
 class Object

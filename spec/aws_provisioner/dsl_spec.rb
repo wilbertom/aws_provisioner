@@ -98,6 +98,13 @@ describe 'AwsProvisioner::DSL' do
       expect(r).to be_kind_of(AwsProvisioner::Resource)
     end
 
+    it 'adds the new resource to the runtime resources' do
+      r = resource :ec2_instance, 'instance01' do
+      end
+
+      expect(AwsProvisioner::Runtime.resource(:ec2_instance, 'instance01')).to eq(r)
+    end
+
     context 'with simple properties' do
       it 'sets the ones declared in a block' do
         r = resource :ec2_instance, 'instance01' do
@@ -130,6 +137,22 @@ describe 'AwsProvisioner::DSL' do
           }
         )
       end
+    end
+  end
+
+  describe 'ref' do
+    it 'returns a reference to a resource added' do
+      resource_name = 'instance01'
+      resource :ec2_instance, resource_name do
+      end
+
+      expect(ref(:ec2_instance, resource_name)).to eq('Ref' => resource_name)
+    end
+
+    it 'raises an error if the resource is not found' do
+      expect do
+        ref(:ec2_instance, 'some_unkown_resource')
+      end.to raise_error(AwsProvisioner::DSL::ReferenceForUnkownResource)
     end
   end
 
