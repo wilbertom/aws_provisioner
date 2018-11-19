@@ -53,7 +53,9 @@ module AwsProvisioner
       exports.each_with_object({}) do |resource, acc|
         acc[resource.name] = {
           'Value' => resource.ref,
-          'Export' => resource.name
+          'Export' => {
+            'Name' => resource.name
+          }
         }
       end
     end

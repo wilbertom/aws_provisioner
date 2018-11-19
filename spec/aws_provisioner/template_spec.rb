@@ -182,7 +182,9 @@ describe AwsProvisioner::Template do
               "Value": {
                 "Ref": "bucket.example.com"
               },
-              "Export": "bucket.example.com"
+              "Export": {
+                "Name": "bucket.example.com"
+              }
             }
           }
         }
@@ -217,7 +219,8 @@ describe AwsProvisioner::Template do
           bucket.example.com:
             Value:
               Ref: bucket.example.com
-            Export: bucket.example.com
+            Export:
+              Name: bucket.example.com
       TEMPLATE
 
       expect(template.compile(:yaml)).to eq(template_yaml)
