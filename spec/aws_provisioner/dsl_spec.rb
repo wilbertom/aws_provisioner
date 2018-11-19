@@ -80,6 +80,40 @@ describe 'AwsProvisioner::DSL' do
 
       resource :ec2_instance, 'instance01' do
       end
+
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::EC2::Subnet', 'subnet01', export: false)
+        .and_call_original
+
+      resource :ec2_subnet, 'subnet01' do
+      end
+    end
+
+    it 'renames eip to EIP' do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::EC2::EIP', 'eip01', export: false)
+        .and_call_original
+
+      resource :ec2_eip, 'eip01' do
+      end
+    end
+
+    it 'renames internet_gateway to InternetGateway' do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::EC2::InternetGateway', 'gateway01', export: false)
+        .and_call_original
+
+      resource :ec2_internet_gateway, 'gateway01' do
+      end
+    end
+
+    it 'renames vpc_gateway_attachment to VPCGatewayAttachment' do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::EC2::VPCGatewayAttachment', 'attachment01', export: false)
+        .and_call_original
+
+      resource :ec2_vpc_gateway_attachment, 'attachment01' do
+      end
     end
 
     it 'renames vpc to VPC' do
