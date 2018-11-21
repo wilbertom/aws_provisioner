@@ -213,7 +213,9 @@ module AwsProvisioner
     RESOURCE_TYPE_SPECIAL_CASES = {
       ec2_security_group: 'EC2::SecurityGroup',
       ec2_vpc_gateway_attachment: 'EC2::VPCGatewayAttachment',
-      ec2_internet_gateway: 'EC2::InternetGateway'
+      ec2_internet_gateway: 'EC2::InternetGateway',
+      ec2_route_table: 'EC2::RouteTable',
+      ec2_subnet_route_table_association: 'EC2::SubnetRouteTableAssociation'
     }.freeze
 
     RESOURCE_TYPE_PARTS_UPPER_CASES = %w[

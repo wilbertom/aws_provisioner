@@ -134,6 +134,24 @@ describe 'AwsProvisioner::DSL' do
       end
     end
 
+    it 'renames route_table to RouteTable' do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::EC2::RouteTable', 'routetable01', export: false)
+        .and_call_original
+
+      resource :ec2_route_table, 'routetable01' do
+      end
+    end
+
+    it 'renames subnet_route_table_association to SubnetRouteTableAssociation' do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::EC2::SubnetRouteTableAssociation', 'association01', export: false)
+        .and_call_original
+
+      resource :ec2_subnet_route_table_association, 'association01' do
+      end
+    end
+
     it 'returns the new resource' do
       r = resource :ec2_instance, 'instance01' do
       end
