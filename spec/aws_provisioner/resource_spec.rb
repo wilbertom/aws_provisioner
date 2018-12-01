@@ -89,5 +89,36 @@ describe AwsProvisioner::Resource do
         'Type' => 'AWS::Resource'
       )
     end
+
+    it 'adds any dependencies to the CFN depends on attribute' do
+      resource1 = AwsProvisioner::Resource.new('AWS::Resource', :name1)
+      resource2 = AwsProvisioner::Resource.new('AWS::Resource', :name2)
+
+      resource1.dependencies << resource2
+
+      expect(resource1.to_h).to eq(
+        'Properties' => {},
+        'Type' => 'AWS::Resource',
+        'DependsOn' => [:name2]
+      )
+    end
+  end
+
+  describe '#dependencies' do
+    it 'is empty by default' do
+      resource = AwsProvisioner::Resource.new('AWS::Resource', :name)
+
+      expect(resource.dependencies).to be_empty
+    end
+
+    it 'resources can be added' do
+      resource1 = AwsProvisioner::Resource.new('AWS::Resource', :name1)
+      resource2 = AwsProvisioner::Resource.new('AWS::Resource', :name2)
+      resource3 = AwsProvisioner::Resource.new('AWS::Resource', :name3)
+
+      expect do
+        resource1.dependencies = [resource2, resource3]
+      end.to change(resource1, :dependencies).from([]).to([resource2, resource3])
+    end
   end
 end

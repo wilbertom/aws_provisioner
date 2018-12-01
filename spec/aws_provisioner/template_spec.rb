@@ -27,6 +27,51 @@ describe AwsProvisioner::Template do
     )
   end
 
+  let(:ec2_vpc_resource) do
+    AwsProvisioner::Resource.new(
+      'AWS::EC2::VPC',
+      'vpc',
+      hash: {
+        cidr_block: '10.0.0.0/16',
+        enable_dns_support: false,
+        enable_dns_hostnames: true
+      }
+    )
+  end
+
+  let(:ec2_internet_gateway_resource) do
+    AwsProvisioner::Resource.new(
+      'AWS::EC2::InternetGateway',
+      'gateway',
+      hash: {}
+    )
+  end
+
+  let(:ec2_vpc_gateway_attachment_resource) do
+    AwsProvisioner::Resource.new(
+      'AWS::EC2::VPCGatewayAttachment',
+      'attachment',
+      hash: {
+        internet_gateway_id: ec2_internet_gateway_resource.ref,
+        vpc_id: ec2_vpc_resource.ref
+      }
+    )
+  end
+
+  let(:ec2_eip_resource) do
+    ec2_eip_resource = AwsProvisioner::Resource.new(
+      'AWS::EC2::EIP',
+      'eip',
+      hash: {
+        domain: 'vpc'
+      }
+    )
+
+    ec2_eip_resource.dependencies << ec2_internet_gateway_resource
+
+    ec2_eip_resource
+  end
+
   describe '#name' do
     it 'defaults to nil' do
       template = AwsProvisioner::Template.new
@@ -151,6 +196,10 @@ describe AwsProvisioner::Template do
   describe '#compile' do
     it 'can transform a template to a JSON format' do
       template = AwsProvisioner::Template.new description: 'A empty template'
+      template.add(ec2_vpc_resource)
+      template.add(ec2_internet_gateway_resource)
+      template.add(ec2_vpc_gateway_attachment_resource)
+      template.add(ec2_eip_resource)
       template.add(ec2_instance_resource)
       template.add(s3_bucket_resource)
 
@@ -159,6 +208,39 @@ describe AwsProvisioner::Template do
           "AWSTemplateFormatVersion": "2010-09-09",
           "Description": "A empty template",
           "Resources": {
+            "vpc": {
+              "Properties": {
+                "CidrBlock": "10.0.0.0/16",
+                "EnableDnsSupport": false,
+                "EnableDnsHostnames": true
+              },
+              "Type": "AWS::EC2::VPC"
+            },
+            "gateway": {
+              "Properties": {
+              },
+              "Type": "AWS::EC2::InternetGateway"
+            },
+            "attachment": {
+              "Properties": {
+                "InternetGatewayId": {
+                  "Ref": "gateway"
+                },
+                "VpcId": {
+                  "Ref": "vpc"
+                }
+              },
+              "Type": "AWS::EC2::VPCGatewayAttachment"
+            },
+            "eip": {
+              "Properties": {
+                "Domain": "vpc"
+              },
+              "Type": "AWS::EC2::EIP",
+              "DependsOn": [
+                "gateway"
+              ]
+            },
             "MyEC2Instance": {
               "Properties": {
                 "ImageId": "ami-0ff8a91507f77f867",
@@ -195,6 +277,10 @@ describe AwsProvisioner::Template do
 
     it 'can transform a template to a YAML format' do
       template = AwsProvisioner::Template.new description: 'A empty template'
+      template.add(ec2_vpc_resource)
+      template.add(ec2_internet_gateway_resource)
+      template.add(ec2_vpc_gateway_attachment_resource)
+      template.add(ec2_eip_resource)
       template.add(ec2_instance_resource)
       template.add(s3_bucket_resource)
 
@@ -203,6 +289,28 @@ describe AwsProvisioner::Template do
         AWSTemplateFormatVersion: '2010-09-09'
         Description: A empty template
         Resources:
+          vpc:
+            Properties:
+              CidrBlock: 10.0.0.0/16
+              EnableDnsSupport: false
+              EnableDnsHostnames: true
+            Type: AWS::EC2::VPC
+          gateway:
+            Properties: {}
+            Type: AWS::EC2::InternetGateway
+          attachment:
+            Properties:
+              InternetGatewayId:
+                Ref: gateway
+              VpcId:
+                Ref: vpc
+            Type: AWS::EC2::VPCGatewayAttachment
+          eip:
+            Properties:
+              Domain: vpc
+            Type: AWS::EC2::EIP
+            DependsOn:
+            - gateway
           MyEC2Instance:
             Properties:
               ImageId: ami-0ff8a91507f77f867
