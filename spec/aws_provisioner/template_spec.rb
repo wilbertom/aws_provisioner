@@ -155,6 +155,36 @@ describe AwsProvisioner::Template do
 
       expect(template.resources).to contain_exactly ec2_instance_resource
     end
+
+    it 'adds all resources in a composite' do
+      template = AwsProvisioner::Template.new
+      composite = AwsProvisioner::CompositeResource.new
+      composite.add(ec2_instance_resource)
+      composite.add(s3_bucket_resource)
+
+      template.add(composite)
+
+      expect(template.resources).to contain_exactly(ec2_instance_resource, s3_bucket_resource)
+    end
+
+    it 'adds all resources in composites recursively' do
+      template = AwsProvisioner::Template.new
+
+      composite1 = AwsProvisioner::CompositeResource.new
+      composite1.add(ec2_instance_resource)
+      composite1.add(s3_bucket_resource)
+      composite2 = AwsProvisioner::CompositeResource.new
+      composite2.add(ec2_vpc_resource)
+      composite1.add(composite2)
+
+      template.add(composite1)
+
+      expect(template.resources).to contain_exactly(
+        ec2_instance_resource,
+        s3_bucket_resource,
+        ec2_vpc_resource
+      )
+    end
   end
 
   describe '#to_h' do

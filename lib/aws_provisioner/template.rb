@@ -16,7 +16,13 @@ module AwsProvisioner
     end
 
     def add(resource)
-      resources << resource
+      if resource.instance_of?(CompositeResource)
+        resource.resources.each do |sub_resource|
+          add(sub_resource)
+        end
+      else
+        resources << resource
+      end
     end
 
     def exports
