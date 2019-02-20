@@ -3,6 +3,8 @@
 require 'json'
 require 'yaml'
 
+require_relative 'composite_resource'
+
 module AwsProvisioner
   class Template
     attr_accessor :name
@@ -16,7 +18,7 @@ module AwsProvisioner
     end
 
     def add(resource)
-      if resource.instance_of?(CompositeResource)
+      if resource.is_a?(CompositeResource)
         resource.resources.each do |sub_resource|
           add(sub_resource)
         end

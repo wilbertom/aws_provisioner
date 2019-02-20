@@ -215,11 +215,16 @@ module AwsProvisioner
       ec2_vpc_gateway_attachment: 'EC2::VPCGatewayAttachment',
       ec2_internet_gateway: 'EC2::InternetGateway',
       ec2_route_table: 'EC2::RouteTable',
-      ec2_subnet_route_table_association: 'EC2::SubnetRouteTableAssociation'
+      ec2_subnet_route_table_association: 'EC2::SubnetRouteTableAssociation',
+      ec2_security_group_egress: 'EC2::SecurityGroupEgress',
+      ec2_security_group_ingress: 'EC2::SecurityGroupIngress',
+      iam_instance_profile: 'IAM::InstanceProfile',
+      auto_scaling_auto_scaling_group: 'AutoScaling::AutoScalingGroup',
+      auto_scaling_launch_configuration: 'AutoScaling::LaunchConfiguration'
     }.freeze
 
     RESOURCE_TYPE_PARTS_UPPER_CASES = %w[
-      ec2 vpc eip
+      ec2 vpc eip iam eks ecr
     ].freeze
 
     private_class_method def self.configure_environment(config)

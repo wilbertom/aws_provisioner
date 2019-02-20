@@ -134,6 +134,24 @@ describe 'AwsProvisioner::DSL' do
       end
     end
 
+    it 'renames iam to IAM' do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::IAM::Role', 'role01', export: false)
+        .and_call_original
+
+      resource :iam_role, 'role01' do
+      end
+    end
+
+    it 'renames eks to EKS' do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::EKS::Cluster', 'cluster01', export: false)
+        .and_call_original
+
+      resource :eks_cluster, 'cluster01' do
+      end
+    end
+
     it 'renames route_table to RouteTable' do
       expect(AwsProvisioner::Resource).to receive(:new)
         .with('AWS::EC2::RouteTable', 'routetable01', export: false)

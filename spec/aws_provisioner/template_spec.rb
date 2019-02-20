@@ -187,6 +187,28 @@ describe AwsProvisioner::Template do
     end
   end
 
+  it 'adds all resources in composites sub classes' do
+    class AnotherCompositeResource < AwsProvisioner::CompositeResource
+    end
+
+    template = AwsProvisioner::Template.new
+
+    composite1 = AnotherCompositeResource.new
+    composite1.add(ec2_instance_resource)
+    composite1.add(s3_bucket_resource)
+    composite2 = AnotherCompositeResource.new
+    composite2.add(ec2_vpc_resource)
+    composite1.add(composite2)
+
+    template.add(composite1)
+
+    expect(template.resources).to contain_exactly(
+      ec2_instance_resource,
+      s3_bucket_resource,
+      ec2_vpc_resource
+    )
+  end
+
   describe '#to_h' do
     it 'defaults to a empty template hash' do
       template = AwsProvisioner::Template.new description: 'A empty template'
