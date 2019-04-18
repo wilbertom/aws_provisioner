@@ -170,6 +170,15 @@ describe 'AwsProvisioner::DSL' do
       end
     end
 
+    it 'renames db_instance to DBInstance' do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::RDS::DBInstance', 'db01', export: false)
+        .and_call_original
+
+      resource :rds_db_instance, 'db01' do
+      end
+    end
+
     it 'returns the new resource' do
       r = resource :ec2_instance, 'instance01' do
       end

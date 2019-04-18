@@ -220,11 +220,12 @@ module AwsProvisioner
       ec2_security_group_ingress: 'EC2::SecurityGroupIngress',
       iam_instance_profile: 'IAM::InstanceProfile',
       auto_scaling_auto_scaling_group: 'AutoScaling::AutoScalingGroup',
-      auto_scaling_launch_configuration: 'AutoScaling::LaunchConfiguration'
+      auto_scaling_launch_configuration: 'AutoScaling::LaunchConfiguration',
+      rds_db_instance: 'RDS::DBInstance'
     }.freeze
 
     RESOURCE_TYPE_PARTS_UPPER_CASES = %w[
-      ec2 vpc eip iam eks ecr
+      ec2 vpc eip iam eks ecr rds
     ].freeze
 
     private_class_method def self.configure_environment(config)
