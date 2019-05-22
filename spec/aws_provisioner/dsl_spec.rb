@@ -188,6 +188,15 @@ describe 'AwsProvisioner::DSL' do
       end
     end
 
+    it 'renames rds_db_parameter_group to RDS::DBParameterGroup' do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::RDS::DBParameterGroup', 'parametergroup01', export: false)
+        .and_call_original
+
+      resource :rds_db_parameter_group, 'parametergroup01' do
+      end
+    end
+
     it 'returns the new resource' do
       r = resource :ec2_instance, 'instance01' do
       end

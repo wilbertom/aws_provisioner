@@ -222,7 +222,8 @@ module AwsProvisioner
       auto_scaling_auto_scaling_group: 'AutoScaling::AutoScalingGroup',
       auto_scaling_launch_configuration: 'AutoScaling::LaunchConfiguration',
       rds_db_instance: 'RDS::DBInstance',
-      rds_db_subnet_group: 'RDS::DBSubnetGroup'
+      rds_db_subnet_group: 'RDS::DBSubnetGroup',
+      rds_db_parameter_group: 'RDS::DBParameterGroup'
     }.freeze
 
     RESOURCE_TYPE_PARTS_UPPER_CASES = %w[
