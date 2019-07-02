@@ -197,6 +197,15 @@ describe 'AwsProvisioner::DSL' do
       end
     end
 
+    it 'renames ec2_vpc_endpoint to AWS::EC2::VPCEndpoint' do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::EC2::VPCEndpoint', 'endpoint01', export: false)
+        .and_call_original
+
+      resource :ec2_vpc_endpoint, 'endpoint01' do
+      end
+    end
+
     it 'returns the new resource' do
       r = resource :ec2_instance, 'instance01' do
       end

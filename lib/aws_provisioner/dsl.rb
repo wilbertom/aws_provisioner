@@ -212,6 +212,7 @@ module AwsProvisioner
 
     RESOURCE_TYPE_SPECIAL_CASES = {
       ec2_security_group: 'EC2::SecurityGroup',
+      ec2_vpc_endpoint: 'EC2::VPCEndpoint',
       ec2_vpc_gateway_attachment: 'EC2::VPCGatewayAttachment',
       ec2_internet_gateway: 'EC2::InternetGateway',
       ec2_route_table: 'EC2::RouteTable',
