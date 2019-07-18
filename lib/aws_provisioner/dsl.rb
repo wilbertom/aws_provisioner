@@ -228,7 +228,7 @@ module AwsProvisioner
     }.freeze
 
     RESOURCE_TYPE_PARTS_UPPER_CASES = %w[
-      ec2 vpc eip iam eks ecr rds
+      ec2 vpc eip iam eks ecr rds ecs
     ].freeze
 
     private_class_method def self.configure_environment(config)

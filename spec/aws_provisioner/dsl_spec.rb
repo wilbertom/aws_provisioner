@@ -89,6 +89,22 @@ describe 'AwsProvisioner::DSL' do
       end
     end
 
+    it 'renames ecs to ECS' do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::ECS::Cluster', 'cluster01', export: false)
+        .and_call_original
+
+      resource :ecs_cluster, 'cluster01' do
+      end
+
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::ECS::Service', 'service', export: false)
+        .and_call_original
+
+      resource :ecs_service, 'service' do
+      end
+    end
+
     it 'renames eip to EIP' do
       expect(AwsProvisioner::Resource).to receive(:new)
         .with('AWS::EC2::EIP', 'eip01', export: false)
