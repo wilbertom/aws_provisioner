@@ -219,6 +219,7 @@ module AwsProvisioner
       ec2_subnet_route_table_association: 'EC2::SubnetRouteTableAssociation',
       ec2_security_group_egress: 'EC2::SecurityGroupEgress',
       ec2_security_group_ingress: 'EC2::SecurityGroupIngress',
+      ecs_task_definition: 'ECS::TaskDefinition',
       iam_instance_profile: 'IAM::InstanceProfile',
       auto_scaling_auto_scaling_group: 'AutoScaling::AutoScalingGroup',
       auto_scaling_launch_configuration: 'AutoScaling::LaunchConfiguration',

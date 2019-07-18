@@ -105,6 +105,15 @@ describe 'AwsProvisioner::DSL' do
       end
     end
 
+    it 'renames task_definition to TaskDefinition' do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::ECS::TaskDefinition', 'task01', export: false)
+        .and_call_original
+
+      resource :ecs_task_definition, 'task01' do
+      end
+    end
+
     it 'renames eip to EIP' do
       expect(AwsProvisioner::Resource).to receive(:new)
         .with('AWS::EC2::EIP', 'eip01', export: false)
