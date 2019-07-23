@@ -114,6 +114,15 @@ describe 'AwsProvisioner::DSL' do
       end
     end
 
+    it 'renames log_group to LogGroup' do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::Logs::LogGroup', 'logs01', export: false)
+        .and_call_original
+
+      resource :logs_log_group, 'logs01' do
+      end
+    end
+
     it 'renames eip to EIP' do
       expect(AwsProvisioner::Resource).to receive(:new)
         .with('AWS::EC2::EIP', 'eip01', export: false)
