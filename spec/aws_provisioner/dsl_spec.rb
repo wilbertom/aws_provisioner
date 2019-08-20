@@ -105,6 +105,15 @@ describe 'AwsProvisioner::DSL' do
       end
     end
 
+    it 'renames ssm to SSM' do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::SSM::Parameter', 'parameter01', export: false)
+        .and_call_original
+
+      resource :ssm_parameter, 'parameter01' do
+      end
+    end
+
     it 'renames task_definition to TaskDefinition' do
       expect(AwsProvisioner::Resource).to receive(:new)
         .with('AWS::ECS::TaskDefinition', 'task01', export: false)
