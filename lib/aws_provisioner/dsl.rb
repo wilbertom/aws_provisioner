@@ -211,23 +211,23 @@ module AwsProvisioner
     private
 
     RESOURCE_TYPE_SPECIAL_CASES = {
-      ec2_security_group: 'EC2::SecurityGroup',
-      secrets_manager_secret: 'SecretsManager::Secret',
-      ec2_vpc_endpoint: 'EC2::VPCEndpoint',
-      ec2_vpc_gateway_attachment: 'EC2::VPCGatewayAttachment',
-      ec2_internet_gateway: 'EC2::InternetGateway',
-      ec2_route_table: 'EC2::RouteTable',
-      ec2_subnet_route_table_association: 'EC2::SubnetRouteTableAssociation',
-      ec2_security_group_egress: 'EC2::SecurityGroupEgress',
-      ec2_security_group_ingress: 'EC2::SecurityGroupIngress',
-      ecs_task_definition: 'ECS::TaskDefinition',
-      logs_log_group: 'Logs::LogGroup',
-      iam_instance_profile: 'IAM::InstanceProfile',
       auto_scaling_auto_scaling_group: 'AutoScaling::AutoScalingGroup',
       auto_scaling_launch_configuration: 'AutoScaling::LaunchConfiguration',
+      ec2_internet_gateway: 'EC2::InternetGateway',
+      ec2_route_table: 'EC2::RouteTable',
+      ec2_security_group_egress: 'EC2::SecurityGroupEgress',
+      ec2_security_group_ingress: 'EC2::SecurityGroupIngress',
+      ec2_security_group: 'EC2::SecurityGroup',
+      ec2_subnet_route_table_association: 'EC2::SubnetRouteTableAssociation',
+      ec2_vpc_endpoint: 'EC2::VPCEndpoint',
+      ec2_vpc_gateway_attachment: 'EC2::VPCGatewayAttachment',
+      ecs_task_definition: 'ECS::TaskDefinition',
+      iam_instance_profile: 'IAM::InstanceProfile',
+      logs_log_group: 'Logs::LogGroup',
       rds_db_instance: 'RDS::DBInstance',
+      rds_db_parameter_group: 'RDS::DBParameterGroup',
       rds_db_subnet_group: 'RDS::DBSubnetGroup',
-      rds_db_parameter_group: 'RDS::DBParameterGroup'
+      secrets_manager_secret: 'SecretsManager::Secret'
     }.freeze
 
     RESOURCE_TYPE_PARTS_UPPER_CASES = %w[
