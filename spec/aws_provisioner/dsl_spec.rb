@@ -123,6 +123,15 @@ describe 'AwsProvisioner::DSL' do
       end
     end
 
+    it 'renames secret_manager to SecretManager' do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::SecretsManager::Secret', 'secret01', export: false)
+        .and_call_original
+
+      resource :secrets_manager_secret, 'secret01' do
+      end
+    end
+
     it 'renames log_group to LogGroup' do
       expect(AwsProvisioner::Resource).to receive(:new)
         .with('AWS::Logs::LogGroup', 'logs01', export: false)
