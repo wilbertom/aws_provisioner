@@ -150,6 +150,15 @@ describe 'AwsProvisioner::DSL' do
       end
     end
 
+    it 'renames nat_gateway to NatGateway' do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::EC2::NatGateway', 'nat01', export: false)
+        .and_call_original
+
+      resource :ec2_nat_gateway, 'nat01' do
+      end
+    end
+
     it 'renames internet_gateway to InternetGateway' do
       expect(AwsProvisioner::Resource).to receive(:new)
         .with('AWS::EC2::InternetGateway', 'gateway01', export: false)
