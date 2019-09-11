@@ -132,6 +132,15 @@ describe 'AwsProvisioner::DSL' do
       end
     end
 
+    it 'renames auto_scaling_scheduled_action to AutoScaling::ScheduledAction' do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::AutoScaling::ScheduledAction', 'action01', export: false)
+        .and_call_original
+
+      resource :auto_scaling_scheduled_action, 'action01' do
+      end
+    end
+
     it 'renames log_group to LogGroup' do
       expect(AwsProvisioner::Resource).to receive(:new)
         .with('AWS::Logs::LogGroup', 'logs01', export: false)

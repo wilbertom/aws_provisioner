@@ -213,6 +213,7 @@ module AwsProvisioner
     RESOURCE_TYPE_SPECIAL_CASES = {
       auto_scaling_auto_scaling_group: 'AutoScaling::AutoScalingGroup',
       auto_scaling_launch_configuration: 'AutoScaling::LaunchConfiguration',
+      auto_scaling_scheduled_action: 'AutoScaling::ScheduledAction',
       ec2_internet_gateway: 'EC2::InternetGateway',
       ec2_route_table: 'EC2::RouteTable',
       ec2_security_group_egress: 'EC2::SecurityGroupEgress',
