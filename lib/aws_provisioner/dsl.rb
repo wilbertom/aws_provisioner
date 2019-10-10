@@ -224,6 +224,7 @@ module AwsProvisioner
       ec2_vpc_endpoint: 'EC2::VPCEndpoint',
       ec2_vpc_gateway_attachment: 'EC2::VPCGatewayAttachment',
       ecs_task_definition: 'ECS::TaskDefinition',
+      elastic_load_balancing_v2_listener: 'ElasticLoadBalancingV2::Listener',
       elastic_load_balancing_v2_load_balancer: 'ElasticLoadBalancingV2::LoadBalancer',
       iam_instance_profile: 'IAM::InstanceProfile',
       logs_log_group: 'Logs::LogGroup',

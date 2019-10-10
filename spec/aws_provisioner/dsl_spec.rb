@@ -141,6 +141,15 @@ describe 'AwsProvisioner::DSL' do
       end
     end
 
+    it 'renames elastic_load_balancing_v2_listener to ElasticLoadBalancingV2::Listener' do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::ElasticLoadBalancingV2::Listener', 'listener01', export: false)
+        .and_call_original
+
+      resource :elastic_load_balancing_v2_listener, 'listener01' do
+      end
+    end
+
     it 'renames auto_scaling_scheduled_action to AutoScaling::ScheduledAction' do
       expect(AwsProvisioner::Resource).to receive(:new)
         .with('AWS::AutoScaling::ScheduledAction', 'action01', export: false)
