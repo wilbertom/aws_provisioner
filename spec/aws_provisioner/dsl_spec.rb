@@ -141,6 +141,15 @@ describe 'AwsProvisioner::DSL' do
       end
     end
 
+    it 'renames certificate_manager_certificate to CertificateManager::Certificate' do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::CertificateManager::Certificate', 'certificate01', export: false)
+        .and_call_original
+
+      resource :certificate_manager_certificate, 'certificate01' do
+      end
+    end
+
     it 'renames elastic_load_balancing_v2_listener to ElasticLoadBalancingV2::Listener' do
       expect(AwsProvisioner::Resource).to receive(:new)
         .with('AWS::ElasticLoadBalancingV2::Listener', 'listener01', export: false)

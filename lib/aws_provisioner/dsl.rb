@@ -214,6 +214,7 @@ module AwsProvisioner
       auto_scaling_auto_scaling_group: 'AutoScaling::AutoScalingGroup',
       auto_scaling_launch_configuration: 'AutoScaling::LaunchConfiguration',
       auto_scaling_scheduled_action: 'AutoScaling::ScheduledAction',
+      certificate_manager_certificate: 'CertificateManager::Certificate',
       ec2_internet_gateway: 'EC2::InternetGateway',
       ec2_nat_gateway: 'EC2::NatGateway',
       ec2_route_table: 'EC2::RouteTable',
