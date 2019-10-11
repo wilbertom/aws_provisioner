@@ -159,6 +159,15 @@ describe 'AwsProvisioner::DSL' do
       end
     end
 
+    it 'renames elastic_load_balancing_v2_target_group to ElasticLoadBalancingV2::TargetGroup' do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::ElasticLoadBalancingV2::TargetGroup', 'group01', export: false)
+        .and_call_original
+
+      resource :elastic_load_balancing_v2_target_group, 'group01' do
+      end
+    end
+
     it 'renames auto_scaling_scheduled_action to AutoScaling::ScheduledAction' do
       expect(AwsProvisioner::Resource).to receive(:new)
         .with('AWS::AutoScaling::ScheduledAction', 'action01', export: false)

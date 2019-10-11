@@ -227,6 +227,7 @@ module AwsProvisioner
       ecs_task_definition: 'ECS::TaskDefinition',
       elastic_load_balancing_v2_listener: 'ElasticLoadBalancingV2::Listener',
       elastic_load_balancing_v2_load_balancer: 'ElasticLoadBalancingV2::LoadBalancer',
+      elastic_load_balancing_v2_target_group: 'ElasticLoadBalancingV2::TargetGroup',
       iam_instance_profile: 'IAM::InstanceProfile',
       logs_log_group: 'Logs::LogGroup',
       rds_db_instance: 'RDS::DBInstance',
