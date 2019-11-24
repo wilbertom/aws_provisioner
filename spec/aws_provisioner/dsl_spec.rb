@@ -303,6 +303,15 @@ describe 'AwsProvisioner::DSL' do
       end
     end
 
+    it 'renames route_53_hosted_zone to Route53::HostedZone' do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::Route53::HostedZone', 'zone01', export: false)
+        .and_call_original
+
+      resource :route_53_hosted_zone, 'zone01' do
+      end
+    end
+
     it 'renames ec2_vpc_endpoint to AWS::EC2::VPCEndpoint' do
       expect(AwsProvisioner::Resource).to receive(:new)
         .with('AWS::EC2::VPCEndpoint', 'endpoint01', export: false)
