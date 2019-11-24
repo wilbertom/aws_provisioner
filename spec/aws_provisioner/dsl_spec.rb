@@ -312,6 +312,15 @@ describe 'AwsProvisioner::DSL' do
       end
     end
 
+    it 'renames route_53_record_set to Route53::RecordSet' do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::Route53::RecordSet', 'record01', export: false)
+        .and_call_original
+
+      resource :route_53_record_set, 'record01' do
+      end
+    end
+
     it 'renames ec2_vpc_endpoint to AWS::EC2::VPCEndpoint' do
       expect(AwsProvisioner::Resource).to receive(:new)
         .with('AWS::EC2::VPCEndpoint', 'endpoint01', export: false)

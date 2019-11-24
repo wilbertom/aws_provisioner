@@ -234,6 +234,7 @@ module AwsProvisioner
       rds_db_parameter_group: 'RDS::DBParameterGroup',
       rds_db_subnet_group: 'RDS::DBSubnetGroup',
       route_53_hosted_zone: 'Route53::HostedZone',
+      route_53_record_set: 'Route53::RecordSet',
       secrets_manager_secret: 'SecretsManager::Secret'
     }.freeze
 
