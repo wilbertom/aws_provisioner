@@ -62,7 +62,7 @@ module AwsProvisioner
         acc[resource.name] = {
           'Value' => resource.ref,
           'Export' => {
-            'Name' => resource.name
+            'Name' => "#{current}#{resource.name}"
           }
         }
       end
