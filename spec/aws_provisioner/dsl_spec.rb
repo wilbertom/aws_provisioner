@@ -330,6 +330,15 @@ describe 'AwsProvisioner::DSL' do
       end
     end
 
+    it 'renames ec2_flow_log to AWS::EC2::FlowLog' do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::EC2::FlowLog', 'logs01', export: false)
+        .and_call_original
+
+      resource :ec2_flow_log, 'logs01' do
+      end
+    end
+
     it 'returns the new resource' do
       r = resource :ec2_instance, 'instance01' do
       end
