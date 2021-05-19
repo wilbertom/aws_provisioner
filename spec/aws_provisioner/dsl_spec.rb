@@ -123,6 +123,15 @@ describe 'AwsProvisioner::DSL' do
       end
     end
 
+    it 'renames guard_duty_detector to GuardDuty::Detector' do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::GuardDuty::Detector', 'detector01', export: false)
+        .and_call_original
+
+      resource :guard_duty_detector, 'detector01' do
+      end
+    end
+
     it 'renames secret_manager to SecretManager' do
       expect(AwsProvisioner::Resource).to receive(:new)
         .with('AWS::SecretsManager::Secret', 'secret01', export: false)
