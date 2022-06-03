@@ -132,6 +132,15 @@ describe 'AwsProvisioner::DSL' do
       end
     end
 
+    it 'renames ec2_volume_attachment to EC2::VolumeAttachment' do
+      expect(AwsProvisioner::Resource).to receive(:new)
+        .with('AWS::EC2::VolumeAttachment', 'volumeattachment01', export: false)
+        .and_call_original
+
+      resource :ec2_volume_attachment, 'volumeattachment01' do
+      end
+    end
+
     it 'renames secret_manager to SecretManager' do
       expect(AwsProvisioner::Resource).to receive(:new)
         .with('AWS::SecretsManager::Secret', 'secret01', export: false)

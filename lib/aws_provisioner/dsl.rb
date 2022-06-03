@@ -223,6 +223,7 @@ module AwsProvisioner
       ec2_security_group_ingress: 'EC2::SecurityGroupIngress',
       ec2_security_group: 'EC2::SecurityGroup',
       ec2_subnet_route_table_association: 'EC2::SubnetRouteTableAssociation',
+      ec2_volume_attachment: 'EC2::VolumeAttachment',
       ec2_vpc_endpoint: 'EC2::VPCEndpoint',
       ec2_vpc_gateway_attachment: 'EC2::VPCGatewayAttachment',
       ecs_task_definition: 'ECS::TaskDefinition',
